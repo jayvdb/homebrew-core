@@ -24,19 +24,20 @@ class Rpm < Formula
   depends_on "libarchive"
   depends_on "libmagic"
   depends_on "libomp"
-  depends_on "lua"
+  depends_on "lua@5.3"
   depends_on "openssl@1.1"
   depends_on "pkg-config"
   depends_on "popt"
+  depends_on "python@3.10"
   depends_on "sqlite"
   depends_on "xz"
   depends_on "zstd"
 
   # Fix -flat_namespace being used on Big Sur and later.
-  patch do
-    url "https://raw.githubusercontent.com/Homebrew/formula-patches/03cf8088210822aa2c1ab544ed58ea04c897d9c4/libtool/configure-big_sur.diff"
-    sha256 "35acd6aebc19843f1a2b3a63e880baceb0f5278ab1ace661e57a502d9d78c93c"
-  end
+  #patch do
+  #  url "https://raw.githubusercontent.com/Homebrew/formula-patches/03cf8088210822aa2c1ab544ed58ea04c897d9c4/libtool/configure-big_sur.diff"
+  #  sha256 "35acd6aebc19843f1a2b3a63e880baceb0f5278ab1ace661e57a502d9d78c93c"
+  #end
 
   def install
     ENV.append "CPPFLAGS", "-I#{Formula["lua"].opt_include}/lua"
@@ -57,11 +58,14 @@ class Rpm < Formula
                           "--sysconfdir=#{etc}",
                           "--with-path-magic=#{HOMEBREW_PREFIX}/share/misc/magic",
                           "--enable-nls",
-                          "--disable-plugins",
+                          "--disable-inhibit-plugin",
+                          "--enable-static=lua",
+                          "--enable-plugins",
                           "--with-external-db",
+                          "--enable-python",
                           "--with-crypto=openssl",
                           "--without-apidocs",
-                          "--with-vendor=#{tap.user.downcase}",
+                          #"--with-vendor=#{tap.user.downcase}",
                           # Don't allow superenv shims to be saved into lib/rpm/macros
                           "__MAKE=/usr/bin/make",
                           "__GIT=/usr/bin/git",
